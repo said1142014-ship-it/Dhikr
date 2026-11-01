@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2F5E4E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="الذكر">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+<title>عدّاد الذكر</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* التخطيط: مسبحة في وسط الشاشة، حباتها تمتلئ مع العدّ، والضغط في أي مكان من الدائرة يعدّ. تحتها قائمة الأذكار وأعدادها. */
+:root {
+  --stone: #ECEAE3;
+  --panel: #F8F7F3;
+  --ink: #1F2420;
+  --muted: #5F675F;
+  --rule: #CFCBBF;
+  --bead: #B0752F;
+  --bead-off: #DCD6C7;
+  --thread: #8E8A7C;
+  --accent: #2F5E4E;
+  --font-dhikr: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+  --font-num: "Reem Kufi", "IBM Plex Sans Arabic", sans-serif;
+  --font-ui: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --stone: #151816; --panel: #1D211E; --ink: #E7E5DE; --muted: #A2A79E; --rule: #343A35; --bead: #D69A4E; --bead-off: #343A35; --thread: #59605A; --accent: #8CC6AF; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --stone: #151816; --panel: #1D211E; --ink: #E7E5DE; --muted: #A2A79E; --rule: #343A35; --bead: #D69A4E; --bead-off: #343A35; --thread: #59605A; --accent: #8CC6AF; color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--stone); color: var(--ink); font-family: var(--font-ui); font-size: 15px; line-height: 1.6; }
+.app { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 40px; max-width: 560px; margin: 0 auto; display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+h1 { font-family: var(--font-num); font-size: 1.6rem; margin: 0; font-weight: 700; }
+.today { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.today b { color: var(--accent); font-family: var(--font-num); font-size: 1.1rem; }
+
+.current { text-align: center; display: grid; gap: 2px; }
+.current .text { font-family: var(--font-dhikr); font-size: clamp(1.5rem, 6vw, 2.1rem); font-weight: 700; line-height: 1.5; text-wrap: balance; }
+.current .src { color: var(--muted); font-size: .8rem; }
+
+.tap { position: relative; width: min(100%, 360px); aspect-ratio: 1; margin: 0 auto; border: 0; background: none; padding: 0; cursor: pointer; color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; -webkit-user-select: none; border-radius: 50%; }
+.tap:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.tap svg { width: 100%; height: 100%; display: block; }
+.tap .num { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; pointer-events: none; }
+.tap .n { font-family: var(--font-num); font-size: clamp(3.4rem, 18vw, 5rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.tap .of { color: var(--muted); font-size: .95rem; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.tap .rounds { color: var(--accent); font-size: .85rem; font-weight: 600; min-height: 1.4em; }
+.tap.pulse .n { animation: pulse .18s ease-out; }
+.tap.done .n { color: var(--accent); }
+@keyframes pulse { from { transform: scale(1.08); } to { transform: scale(1); } }
+circle.bd { fill: var(--bead-off); transition: fill .15s; }
+circle.bd.on { fill: var(--bead); }
+circle.thread { fill: none; stroke: var(--thread); stroke-width: 1.2; }
+
+.ctrl { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.btn { font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--rule); border-radius: 999px; padding: 6px 16px; min-height: 40px; cursor: pointer; }
+.btn:focus-visible, .item:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn.warn { color: #B4432F; border-color: currentColor; }
+.btn.small { min-height: 34px; padding: 2px 12px; font-size: .85rem; }
+.confirm { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; font-size: .9rem; }
+
+h2 { font-family: var(--font-num); font-size: 1.1rem; margin: 8px 0 0; font-weight: 500; letter-spacing: .02em; color: var(--muted); }
+.list { display: grid; gap: 8px; }
+.item { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 10px 14px; cursor: pointer; text-align: start; font: inherit; color: inherit; width: 100%; }
+.item[aria-current="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.item .t { font-family: var(--font-dhikr); font-size: 1.15rem; line-height: 1.5; min-width: 0; overflow-wrap: anywhere; }
+.item .c { font-variant-numeric: tabular-nums; color: var(--muted); font-size: .85rem; text-align: end; white-space: nowrap; }
+.item .c b { font-family: var(--font-num); color: var(--ink); font-size: 1rem; }
+.item .bar { grid-column: 1 / -1; height: 3px; border-radius: 3px; background: var(--bead-off); overflow: hidden; }
+.item .bar i { display: block; height: 100%; background: var(--bead); }
+.item .x { font-size: .8rem; color: var(--muted); }
+
+form.add { display: grid; grid-template-columns: minmax(0, 1fr) 84px auto; gap: 8px; }
+input { font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 6px 10px; min-height: 40px; min-width: 0; width: 100%; }
+.note { color: var(--muted); font-size: .8rem; }
+@media (max-width: 380px) { form.add { grid-template-columns: minmax(0, 1fr) 72px; } form.add .btn { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { .tap.pulse .n { animation: none; } circle.bd { transition: none; } }
+</style>
+
+</head>
+<body>
+<div class="app" dir="rtl" lang="ar">
+  <header>
+    <h1>عدّاد الذكر</h1>
+    <div class="today">مجموع اليوم: <b id="total">٠</b></div>
+  </header>
+
+  <div class="current">
+    <div class="text" id="cur-text"></div>
+    <div class="src" id="cur-src"></div>
+  </div>
+
+  <button class="tap" id="tap" type="button" aria-label="سبّح: اضغط للعدّ">
+    <svg id="ring" viewBox="0 0 300 300" aria-hidden="true"></svg>
+    <div class="num"><div class="n" id="n">٠</div><div class="of" id="of"></div><div class="rounds" id="rounds"></div></div>
+  </button>
+
+  <div class="ctrl">
+    <button class="btn" id="undo" type="button">تراجع واحدة</button>
+    <button class="btn" id="next" type="button">الذكر التالي</button>
+    <button class="btn warn" id="reset" type="button">تصفير هذا الذكر</button>
+  </div>
+  <div class="confirm" id="confirm" hidden>
+    <span id="confirm-text">تصفير العدّ؟</span>
+    <button class="btn small warn" id="yes" type="button">نعم، صفّر</button>
+    <button class="btn small" id="no" type="button">إلغاء</button>
+  </div>
+
+  <h2>الأذكار</h2>
+  <div class="list" id="list"></div>
+
+  <h2>أضف ذكرًا</h2>
+  <form class="add" id="add">
+    <input id="add-text" placeholder="نص الذكر" required>
+    <input id="add-target" type="number" min="1" inputmode="numeric" placeholder="العدد" value="100" aria-label="العدد المطلوب">
+    <button class="btn" type="submit">إضافة</button>
+  </form>
+
+  <div class="ctrl"><button class="btn small" id="reset-all" type="button">تصفير كل الأذكار</button></div>
+  <p class="note">اضغط على الدائرة، أو على المسافة أو Enter، لتعدّ مرة. عند تمام العدد يهتز الجهاز إن أمكن وتبدأ دورة جديدة. يُحفظ العدّ في هذا المتصفح وحده، ويبدأ مجموع اليوم من الصفر كل يوم.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const AR = "٠١٢٣٤٥٦٧٨٩";
+  const ar = (v) => String(v).replace(/\d/g, (d) => AR[d]);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const $ = (id) => document.getElementById(id);
+  const KEY = "dhikr-counter-v1";
+  const today = () => new Date().toISOString().slice(0, 10);
+
+  const DEFAULTS = [
+    { id: "subhan", text: "سبحان الله", target: 33, src: "دبر الصلاة: ٣٣ (مسلم)" },
+    { id: "hamd", text: "الحمد لله", target: 33, src: "دبر الصلاة: ٣٣ (مسلم)" },
+    { id: "akbar", text: "الله أكبر", target: 34, src: "عند النوم: ٣٤ (البخاري ومسلم)، وفي الصلاة ٣٣" },
+    { id: "tahlil", text: "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير", target: 100, src: "مئة مرة في اليوم (البخاري ومسلم)" },
+    { id: "bihamdih", text: "سبحان الله وبحمده", target: 100, src: "مئة مرة في اليوم (البخاري ومسلم)" },
+    { id: "istighfar", text: "أستغفر الله وأتوب إليه", target: 100, src: "مئة مرة في اليوم (مسلم والبخاري)" },
+    { id: "salat", text: "اللهم صلّ وسلّم على نبينا محمد", target: 100, src: "" },
+  ];
+
+  let S = { items: DEFAULTS.map((d) => ({ ...d, count: 0, rounds: 0 })), cur: "subhan", day: today(), total: 0 };
+  try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && Array.isArray(s.items) && s.items.length) S = s; } } catch (e) {}
+  if (S.day !== today()) { S.day = today(); S.total = 0; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const cur = () => S.items.find((x) => x.id === S.cur) || S.items[0];
+
+  // المسبحة: حبة لكل عدّة حتى ٣٣، وما زاد يُجمع في حبات تمثل نسبة
+  const ring = $("ring");
+  let beads = [];
+  function drawRing(target) {
+    const n = Math.min(target, 33), R = 128, c = 150, r = Math.max(4, Math.min(11, (Math.PI * R) / n * 0.62));
+    let h = `<circle class="thread" cx="${c}" cy="${c}" r="${R}"/>`;
+    for (let i = 0; i < n; i++) { const a = -Math.PI / 2 - (2 * Math.PI * i) / n; h += `<circle class="bd" cx="${(c + R * Math.cos(a)).toFixed(2)}" cy="${(c + R * Math.sin(a)).toFixed(2)}" r="${r.toFixed(2)}"/>`; }
+    ring.innerHTML = h; ring.dataset.n = n; beads = [...ring.querySelectorAll(".bd")];
+  }
+
+  function render(pulse) {
+    const d = cur();
+    if (String(ring.dataset.n) !== String(Math.min(d.target, 33))) drawRing(d.target);
+    const lit = Math.round((d.count / d.target) * beads.length);
+    beads.forEach((b, i) => b.classList.toggle("on", i < lit));
+    $("cur-text").textContent = d.text;
+    $("cur-src").textContent = d.src || "";
+    $("n").textContent = ar(d.count);
+    $("of").textContent = "من " + ar(d.target);
+    $("rounds").textContent = d.rounds ? "أتممت " + ar(d.rounds) + (d.rounds === 1 ? " دورة" : " دورات") : "";
+    $("total").textContent = ar(S.total);
+    const tap = $("tap");
+    tap.classList.toggle("done", d.rounds > 0 && d.count === 0);
+    if (pulse) { tap.classList.remove("pulse"); void tap.offsetWidth; tap.classList.add("pulse"); }
+    $("list").innerHTML = S.items.map((x) => {
+      const pct = Math.min(100, (x.count / x.target) * 100);
+      return `<button class="item" type="button" data-id="${esc(x.id)}" aria-current="${x.id === d.id}">
+        <span class="t">${esc(x.text)}</span>
+        <span class="c"><b>${ar(x.count)}</b> / ${ar(x.target)}${x.rounds ? `<br><span class="x">${ar(x.rounds)} ×</span>` : ""}</span>
+        <span class="bar"><i style="width:${pct}%"></i></span></button>`;
+    }).join("");
+  }
+
+  const buzz = (p) => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+  function count() {
+    const d = cur();
+    if (S.day !== today()) { S.day = today(); S.total = 0; }
+    d.count++; S.total++;
+    if (d.count >= d.target) { d.count = 0; d.rounds++; buzz([60, 60, 120]); } else buzz(12);
+    save(); render(true);
+  }
+  $("tap").addEventListener("click", count);
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === " " || e.key === "Enter") && !e.target.closest("input, button, form")) { e.preventDefault(); count(); }
+  });
+  $("undo").onclick = () => {
+    const d = cur();
+    if (d.count > 0) d.count--; else if (d.rounds > 0) { d.rounds--; d.count = d.target - 1; } else return;
+    S.total = Math.max(0, S.total - 1); save(); render();
+  };
+  $("next").onclick = () => { const i = S.items.indexOf(cur()); S.cur = S.items[(i + 1) % S.items.length].id; save(); render(); };
+  $("list").addEventListener("click", (e) => { const b = e.target.closest(".item"); if (b) { S.cur = b.dataset.id; save(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); } });
+
+  let pending = null;
+  function ask(text, fn) { pending = fn; $("confirm-text").textContent = text; $("confirm").hidden = false; }
+  $("no").onclick = () => { $("confirm").hidden = true; pending = null; };
+  $("yes").onclick = () => { if (pending) pending(); $("confirm").hidden = true; pending = null; save(); render(); };
+  $("reset").onclick = () => ask("تصفير «" + cur().text.slice(0, 24) + "»؟", () => { const d = cur(); d.count = 0; d.rounds = 0; });
+  $("reset-all").onclick = () => ask("تصفير كل الأذكار؟ يبقى مجموع اليوم.", () => S.items.forEach((x) => { x.count = 0; x.rounds = 0; }));
+
+  $("add").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = $("add-text").value.trim(), target = Math.max(1, parseInt($("add-target").value, 10) || 100);
+    if (!text) return;
+    const id = "u" + Date.now().toString(36);
+    S.items.push({ id, text, target, src: "", count: 0, rounds: 0 });
+    S.cur = id; $("add-text").value = ""; save(); render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // إبقاء الشاشة مضاءة أثناء الذكر إن سمح المتصفح
+  async function wake() { try { if (navigator.wakeLock && document.visibilityState === "visible") await navigator.wakeLock.request("screen"); } catch (e) {} }
+  document.addEventListener("visibilitychange", wake); wake();
+
+  render();
+})();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="0" fill="#2F5E4E"/>
+<circle cx="256" cy="256" r="170" fill="none" stroke="#9FC4B4" stroke-width="5"/>
+<circle cx="256.0" cy="86.0" r="13" fill="#D69A4E"/>
+<circle cx="223.8" cy="89.1" r="13" fill="#D69A4E"/>
+<circle cx="192.8" cy="98.2" r="13" fill="#D69A4E"/>
+<circle cx="164.1" cy="113.0" r="13" fill="#D69A4E"/>
+<circle cx="138.7" cy="133.0" r="13" fill="#D69A4E"/>
+<circle cx="117.5" cy="157.4" r="13" fill="#D69A4E"/>
+<circle cx="101.4" cy="185.4" r="13" fill="#D69A4E"/>
+<circle cx="90.8" cy="215.9" r="13" fill="#D69A4E"/>
+<circle cx="86.2" cy="247.9" r="13" fill="#D69A4E"/>
+<circle cx="87.7" cy="280.2" r="13" fill="#D69A4E"/>
+<circle cx="95.3" cy="311.6" r="13" fill="#D69A4E"/>
+<circle cx="108.8" cy="341.0" r="13" fill="#E8E1D2"/>
+<circle cx="127.5" cy="367.3" r="13" fill="#E8E1D2"/>
+<circle cx="150.9" cy="389.6" r="13" fill="#E8E1D2"/>
+<circle cx="178.1" cy="407.1" r="13" fill="#E8E1D2"/>
+<circle cx="208.1" cy="419.1" r="13" fill="#E8E1D2"/>
+<circle cx="239.8" cy="425.2" r="13" fill="#E8E1D2"/>
+<circle cx="272.2" cy="425.2" r="13" fill="#E8E1D2"/>
+<circle cx="303.9" cy="419.1" r="13" fill="#E8E1D2"/>
+<circle cx="333.9" cy="407.1" r="13" fill="#E8E1D2"/>
+<circle cx="361.1" cy="389.6" r="13" fill="#E8E1D2"/>
+<circle cx="384.5" cy="367.3" r="13" fill="#E8E1D2"/>
+<circle cx="403.2" cy="341.0" r="13" fill="#E8E1D2"/>
+<circle cx="416.7" cy="311.6" r="13" fill="#E8E1D2"/>
+<circle cx="424.3" cy="280.2" r="13" fill="#E8E1D2"/>
+<circle cx="425.8" cy="247.9" r="13" fill="#E8E1D2"/>
+<circle cx="421.2" cy="215.9" r="13" fill="#E8E1D2"/>
+<circle cx="410.6" cy="185.4" r="13" fill="#E8E1D2"/>
+<circle cx="394.5" cy="157.4" r="13" fill="#E8E1D2"/>
+<circle cx="373.3" cy="133.0" r="13" fill="#E8E1D2"/>
+<circle cx="347.9" cy="113.0" r="13" fill="#E8E1D2"/>
+<circle cx="319.2" cy="98.2" r="13" fill="#E8E1D2"/>
+<circle cx="288.2" cy="89.1" r="13" fill="#E8E1D2"/>
+<text x="256" y="256" dy="0.35em" text-anchor="middle" font-family="Amiri, serif" font-size="150" font-weight="700" fill="#F3EBDD">ذِكر</text>
+</svg>
