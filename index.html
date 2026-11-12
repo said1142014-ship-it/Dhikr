@@ -87,6 +87,7 @@ input { font: inherit; color: inherit; background: var(--panel); border: 1px sol
 .note { color: var(--muted); font-size: .8rem; }
 @media (max-width: 380px) { form.add { grid-template-columns: minmax(0, 1fr) 72px; } form.add .btn { grid-column: 1 / -1; } }
 @media (prefers-reduced-motion: reduce) { .tap.pulse .n { animation: none; } circle.bd { transition: none; } }
+.install-panel{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:12px 14px}.install-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.install-panel h2{font-family:var(--font-ui);font-size:.9rem;margin:0;color:var(--ink);font-weight:600}.install-panel .note{margin:5px 0 0;font-size:.75rem}.install-panel .btn{white-space:nowrap;font-size:.8rem;padding:6px 12px;color:var(--accent)}#offline-status[data-ready="true"]{color:var(--accent)}
 </style>
 
 </head>
@@ -96,6 +97,11 @@ input { font: inherit; color: inherit; background: var(--panel); border: 1px sol
     <h1>عدّاد الذكر</h1>
     <div class="today">مجموع اليوم: <b id="total">٠</b></div>
   </header>
+
+  <section class="install-panel" id="install-panel" aria-labelledby="install-title">
+    <div class="install-row"><div><h2 id="install-title">استخدمه كتطبيق</h2><p class="note" id="offline-status" role="status">جارٍ التجهيز للعمل دون إنترنت…</p></div><button class="btn" id="install-app" type="button" aria-controls="install-help" aria-expanded="false">تثبيت التطبيق</button></div>
+    <div id="install-help" class="note" hidden><p>على Android: افتح الصفحة في Chrome، واضغط على قائمة ⋮ ثم «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</p><p>على iPhone: افتح الصفحة في Safari، ثم «مشاركة» ← «إضافة إلى الشاشة الرئيسية».</p><p>انتظر ظهور «جاهز للعمل دون إنترنت» قبل فصل الاتصال.</p></div>
+  </section>
 
   <div class="current">
     <div class="text" id="cur-text"></div>
@@ -236,8 +242,7 @@ input { font: inherit; color: inherit; background: var(--panel); border: 1px sol
 })();
 </script>
 
-<script>
-if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
-</script>
+<script type="module" src="install.mjs"></script>
 </body>
 </html>
+
